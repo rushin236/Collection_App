@@ -1,6 +1,6 @@
-from datetime import datetime
-
 import gspread
+import pandas as pd
+import pywhatkit
 import streamlit as st
 from google.oauth2.service_account import Credentials
 
@@ -61,7 +61,7 @@ class Daily_Collection:
         except Exception as e:
             raise e
 
-    def add_collection(self, date: datetime, customer, amount):
+    def add_collection(self, date, customer, amount):
         try:
             todays_date = date.strftime("%d/%m/%Y")
             repeat = True
@@ -104,6 +104,18 @@ class Daily_Collection:
                     Daily Amount: {amount} \n
                     Customer Name: {customer} \n
                     """
+        except Exception as e:
+            raise e
+
+    def send_collection(self, date):
+        try:
+            names = self.collection_sheet.row_values(1)[1:]
+            collection = self.collection_sheet.row_values(
+                row=self.collection_sheet.find(query=str(date.strftime("%d/%m/%Y"))).row
+            )[1:]
+            data = pd.DataFrame(data={"Names": names, date: collection})
+
+            return data
         except Exception as e:
             raise e
 

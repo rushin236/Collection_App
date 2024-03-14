@@ -40,3 +40,10 @@ def AddCollection():
 
         st.success(response)
 
+    send_btn = st.button(label="Send Collection", use_container_width=True)
+
+    if send_btn:
+        data = Daily_Collection().send_collection(date=date)
+
+        st.table(data=data)
+
