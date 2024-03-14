@@ -10,7 +10,7 @@ def AddCollection():
 
     with date_col:
         st.subheader("Date:")
-        st.date_input(
+        date = st.date_input(
             label="Date", label_visibility="hidden", value="today", format="DD/MM/YYYY"
         )
 
@@ -24,10 +24,19 @@ def AddCollection():
 
     with amount_col:
         st.subheader("Amount:")
-        st.number_input(
+        amount = st.number_input(
             label="Amount",
             label_visibility="hidden",
             min_value=10,
             value=int(Daily_Collection().get_daily_amount(customer=customer)),
         )
+
+    submit_btn = st.button(label="Submit")
+
+    if submit_btn:
+        response = Daily_Collection().add_collection(
+            date=date, customer=customer, amount=amount
+        )
+
+        st.success(response)
 
