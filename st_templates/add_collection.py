@@ -31,7 +31,7 @@ def AddCollection():
             value=int(Daily_Collection().get_daily_amount(customer=customer)),
         )
 
-    submit_btn = st.button(label="Submit")
+    submit_btn = st.button(label="Submit", use_container_width=True)
 
     if submit_btn:
         response = Daily_Collection().add_collection(
