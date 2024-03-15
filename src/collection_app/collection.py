@@ -112,7 +112,11 @@ class Daily_Collection:
             collection = self.collection_sheet.row_values(
                 row=self.collection_sheet.find(query=str(date.strftime("%d/%m/%Y"))).row
             )[1:]
-            data = pd.DataFrame(data={"Names": names, date: collection})
+            names.append("Total")
+            collection.append(sum([int(x) for x in collection]))
+            data = pd.DataFrame(
+                data={"Names": names, date.strftime("%d-%m-%Y"): collection}
+            )
 
             return data
         except Exception as e:
