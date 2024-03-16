@@ -43,7 +43,7 @@ def AddCollection():
     show_btn = st.button(label="Show Collection", use_container_width=True)
 
     if show_btn:
-        data = Daily_Collection().send_collection(date=date)
+        data = Daily_Collection().show_collection(date=date)
 
         st.table(data=data)
 

@@ -19,6 +19,27 @@ class Daily_Collection:
         self.collection_sheet = workbook.worksheet("Collection")
         self.customer_sheet = workbook.worksheet("Customers")
 
+    def refresh_customers(self):
+        customers_sheet = self.customer_sheet.get_values()
+        names = []
+        amounts = []
+        locations = []
+        for name, amount, location in customers_sheet[1:]:
+            names.append(name)
+            amounts.append(amount)
+            locations.append(location)
+
+        refreshed_data = {
+            customers_sheet[0][0]: names,
+            customers_sheet[0][1]: amounts,
+            customers_sheet[0][2]: locations,
+        }
+
+        refreshed_data = pd.DataFrame(refreshed_data)
+        refreshed_data.to_csv("artifacts/customers/customers.csv", index=False)
+
+        return refreshed_data
+
     def get_customer_names(self):
         customer_names = self.customer_sheet.col_values(1)[1:]
 
@@ -106,19 +127,19 @@ class Daily_Collection:
         except Exception as e:
             raise e
 
-    def send_collection(self, date):
+    def show_collection(self, date):
         try:
             names = self.collection_sheet.row_values(1)[1:]
-            collection = self.collection_sheet.row_values(
+            amounts = self.collection_sheet.row_values(
                 row=self.collection_sheet.find(query=str(date.strftime("%d/%m/%Y"))).row
             )[1:]
             names.append("Total")
-            collection.append(sum([int(x) for x in collection]))
-            data = pd.DataFrame(
-                data={"Names": names, date.strftime("%d-%m-%Y"): collection}
+            amounts.append(sum([int(x) for x in amounts if x != ""]))
+            collection = pd.DataFrame(
+                data={"Names": names, date.strftime("%d-%m-%Y"): amounts}
             )
 
-            return data
+            return collection
         except Exception as e:
             raise e
 
