@@ -100,6 +100,11 @@ class Daily_Collection:
                     values=[customer_name, daily_amount, customer_location]
                 )
 
+                if customer_name not in self.names:
+                    self.collection_sheet.update_cell(
+                        row=1, col=len(self.names) + 1, value=customer_name
+                    )
+
                 return (
                     True,
                     f"Added Customer: {customer_name}, Daily Collection: {daily_amount}, Location: {customer_location} to database.",
@@ -116,6 +121,11 @@ class Daily_Collection:
     def add_collection(self, date, customer, amount):
         try:
             todays_date = date.strftime("%d/%m/%Y")
+
+            if customer not in self.names:
+                self.collection_sheet.update_cell(
+                    row=1, col=len(self.names) + 1, value=customer
+                )
 
             if todays_date not in self.dates:
                 self.collection_sheet.update_cell(
