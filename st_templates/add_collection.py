@@ -6,6 +6,11 @@ from src.collection_app.collection import Daily_Collection
 def AddCollection():
     st.title(":blue[Collection]")
 
+    refresh_btn = st.button(label="Refresh", use_container_width=True)
+    if refresh_btn:
+        response = Daily_Collection().refresh_customers(refresh_btn=True)
+        st.success(response)
+
     date_col, name_col, amount_col = st.columns(spec=3, gap="large")
 
     with date_col:
@@ -28,8 +33,10 @@ def AddCollection():
             label="Amount",
             label_visibility="hidden",
             min_value=10,
-            value=int(Daily_Collection().get_daily_amount(customer=customer)),
+            value=Daily_Collection().get_daily_amount(customer=customer),
         )
+        # amount = Daily_Collection().get_daily_amount(customer=customer)
+        # st.write(amount)
 
     submit_btn = st.button(label="Submit", use_container_width=True)
 
@@ -37,7 +44,6 @@ def AddCollection():
         response = Daily_Collection().add_collection(
             date=date, customer=customer, amount=amount
         )
-
         st.success(response)
 
     show_btn = st.button(label="Show Collection", use_container_width=True)
