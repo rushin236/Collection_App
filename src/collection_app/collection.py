@@ -155,15 +155,17 @@ class Daily_Collection:
 
     def show_collection(self, date):
         try:
-            names = self.collection_sheet.row_values(1)[1:]
-            amounts = self.collection_sheet.row_values(
-                row=self.collection_sheet.find(query=str(date.strftime("%d/%m/%Y"))).row
-            )[1:]
+            date = date.strftime("%d/%m/%Y")
+            values = self.collection_sheet.get_values()
+            names = values[0][1:]
+            amounts = []
+            for each in values[1:]:
+                if each[0] == date:
+                    amounts.extend([int(x) if x != "" else 0 for x in each[1:]])
+
             names.append("Total")
-            amounts.append(sum([int(x) for x in amounts if x != ""]))
-            collection = pd.DataFrame(
-                data={"Names": names, date.strftime("%d-%m-%Y"): amounts}
-            )
+            amounts.append(sum(amounts))
+            collection = pd.DataFrame(data={"Names": names, date: amounts})
 
             return collection
         except Exception as e:
