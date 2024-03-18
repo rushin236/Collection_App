@@ -69,11 +69,6 @@ class Daily_Collection:
             new_dates = "".join([x + "\n" for x in dates])
             f.write(new_dates)
 
-    def refresh_customers(self, refresh_btn: bool):
-        if refresh_btn:
-            self.__refresh_data__()
-            return "Data Refresh Complete."
-
     def get_customer_names(self):
         return self.customers_df["Customer Name"].tolist()
 
