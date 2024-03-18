@@ -100,10 +100,9 @@ class Daily_Collection:
                     values=[customer_name, daily_amount, customer_location]
                 )
 
-                if customer_name not in self.names:
-                    self.collection_sheet.update_cell(
-                        row=1, col=len(self.names) + 1, value=customer_name
-                    )
+                self.collection_sheet.update_cell(
+                    row=1, col=len(self.names) + 1, value=customer_name
+                )
 
                 return (
                     True,
@@ -126,24 +125,21 @@ class Daily_Collection:
                 self.collection_sheet.update_cell(
                     row=1, col=len(self.names) + 1, value=customer
                 )
+                self.__refresh_data__()
+                self.names.append(customer)
 
             if todays_date not in self.dates:
                 self.collection_sheet.update_cell(
                     row=len(self.dates) + 1, col=1, value=todays_date
                 )
                 self.__refresh_data__()
-                self.collection_sheet.update_cell(
-                    row=len(self.dates) + 1,
-                    col=self.names.index(customer) + 2,
-                    value=amount,
-                )
+                self.dates.append(todays_date)
 
-            else:
-                self.collection_sheet.update_cell(
-                    row=self.dates.index(todays_date) + 2,
-                    col=self.names.index(customer) + 2,
-                    value=amount,
-                )
+            self.collection_sheet.update_cell(
+                row=self.dates.index(todays_date) + 2,
+                col=self.names.index(customer) + 2,
+                value=amount,
+            )
 
             return f"""
             Date: {todays_date} \n
