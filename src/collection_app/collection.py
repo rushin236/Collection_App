@@ -135,6 +135,17 @@ class Daily_Collection:
                 col=self.names.index(customer) + 2,
                 value=amount,
             )
+                self.collection_sheet.update_cell(
+                    row=self.dates.index(todays_date) + 1,
+                    col=self.names.index(customer) + 2,
+                    value=amount,
+                )
+            else:
+                self.collection_sheet.update_cell(
+                    row=self.dates.index(todays_date) + 2,
+                    col=self.names.index(customer) + 2,
+                    value=amount,
+                )
 
             return f"""
             Date: {todays_date} \n
