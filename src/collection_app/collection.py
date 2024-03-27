@@ -129,12 +129,6 @@ class Daily_Collection:
                 )
                 self.__refresh_data__()
                 self.dates.append(todays_date)
-
-            self.collection_sheet.update_cell(
-                row=self.dates.index(todays_date) + 2,
-                col=self.names.index(customer) + 2,
-                value=amount,
-            )
                 self.collection_sheet.update_cell(
                     row=self.dates.index(todays_date) + 1,
                     col=self.names.index(customer) + 2,
