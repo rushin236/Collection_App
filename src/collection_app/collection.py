@@ -30,7 +30,6 @@ class Daily_Collection:
             paths = ["artifacts/customers", "artifacts/collection"]
             for path in paths:
                 os.makedirs(path, exist_ok=True)
-            self.__refresh_data__()
 
         self.__refresh_data__()
 
@@ -117,13 +116,6 @@ class Daily_Collection:
     def add_collection(self, date, customer, amount):
         try:
             todays_date = date.strftime("%d/%m/%Y")
-
-            if customer not in self.names:
-                self.collection_sheet.update_cell(
-                    row=1, col=len(self.names) + 1, value=customer
-                )
-                self.__refresh_data__()
-                self.names.append(customer)
 
             if todays_date not in self.dates:
                 self.collection_sheet.update_cell(
