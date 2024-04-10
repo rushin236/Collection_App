@@ -32,6 +32,8 @@ class Daily_Collection:
                 os.makedirs(path, exist_ok=True)
             self.__refresh_data__()
 
+        self.__refresh_data__()
+
         self.customers_df = pd.read_csv(self.customers_file_path)
 
         with open(self.names_text_file, "r") as f:
