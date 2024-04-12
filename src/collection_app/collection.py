@@ -30,8 +30,7 @@ class Daily_Collection:
             paths = ["artifacts/customers", "artifacts/collection"]
             for path in paths:
                 os.makedirs(path, exist_ok=True)
-
-        self.__refresh_data__()
+            self.__refresh_data__()
 
         self.customers_df = pd.read_csv(self.customers_file_path)
 
@@ -99,6 +98,8 @@ class Daily_Collection:
                 self.collection_sheet.update_cell(
                     row=1, col=len(self.names) + 1, value=customer_name
                 )
+
+                self.__refresh_data__()
 
                 return (
                     True,
