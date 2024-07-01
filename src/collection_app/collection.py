@@ -129,14 +129,14 @@ class Daily_Collection:
                     col=self.names.index(customer) + 2,
                     value=amount,
                 )
-                print(self.dates)
+                # print(self.dates)
             else:
                 self.collection_sheet.update_cell(
                     row=self.dates.index(date) + 2,
                     col=self.names.index(customer) + 2,
                     value=amount,
                 )
-                print(self.dates)
+                # print(self.dates)
 
             return f"""
             Date: {date} \n
