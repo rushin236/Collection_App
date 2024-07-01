@@ -62,11 +62,11 @@ class Daily_Collection:
         customers = self.collection_sheet.row_values(row=1)[1:]
 
         with open(self.names_text_file, "w") as f:
-            new_names = "".join([x + "\n" for x in customers])
+            new_names = "".join([f"{x}\n" for x in customers])
             f.write(new_names)
 
         with open(self.dates_text_file, "w") as f:
-            new_dates = "".join([x + "\n" for x in dates])
+            new_dates = "".join([f"{x}\n" for x in dates])
             f.write(new_dates)
 
     def get_customer_names(self):
