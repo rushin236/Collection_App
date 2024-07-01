@@ -11,7 +11,7 @@ def AddCollection():
     with date_col:
         st.subheader("Date:")
         date = st.date_input(
-            label="Date", label_visibility="hidden", value="today", format="DD/MM/YYYY"
+            label="Date", label_visibility="hidden", value="today", format="MM/DD/YYYY"
         )
 
     with name_col:
@@ -47,4 +47,3 @@ def AddCollection():
         data = Daily_Collection().show_collection(date=date)
 
         st.table(data=data)
-

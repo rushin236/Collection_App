@@ -116,28 +116,30 @@ class Daily_Collection:
 
     def add_collection(self, date, customer, amount):
         try:
-            todays_date = date.strftime("%d/%m/%Y")
+            date = date.strftime("%m/%d/%Y")
 
-            if todays_date not in self.dates:
+            if date not in self.dates:
                 self.collection_sheet.update_cell(
-                    row=len(self.dates) + 1, col=1, value=todays_date
+                    row=len(self.dates) + 1, col=1, value=date
                 )
                 self.__refresh_data__()
-                self.dates.append(todays_date)
+                self.dates.append(date)
                 self.collection_sheet.update_cell(
-                    row=self.dates.index(todays_date) + 1,
+                    row=self.dates.index(date) + 1,
                     col=self.names.index(customer) + 2,
                     value=amount,
                 )
+                print(self.dates)
             else:
                 self.collection_sheet.update_cell(
-                    row=self.dates.index(todays_date) + 2,
+                    row=self.dates.index(date) + 2,
                     col=self.names.index(customer) + 2,
                     value=amount,
                 )
+                print(self.dates)
 
             return f"""
-            Date: {todays_date} \n
+            Date: {date} \n
             Daily Amount: {amount} \n
             Customer Name: {customer} \n
             """
@@ -146,7 +148,7 @@ class Daily_Collection:
 
     def show_collection(self, date):
         try:
-            date = date.strftime("%d/%m/%Y")
+            date = date.strftime("%m/%d/%Y")
             values = self.collection_sheet.get_values()
             names = values[0][1:]
             amounts = []
@@ -161,4 +163,3 @@ class Daily_Collection:
             return collection
         except Exception as e:
             raise e
-
