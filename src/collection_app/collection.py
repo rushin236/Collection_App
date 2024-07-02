@@ -1,9 +1,11 @@
 import os
 
+
 import gspread
 import pandas as pd
 import streamlit as st
 from google.oauth2.service_account import Credentials
+
 
 creds = Credentials.from_service_account_info(
     st.secrets["google_service_account"],
@@ -149,17 +151,25 @@ class Daily_Collection:
     def show_collection(self, date):
         try:
             date = date.strftime("%m/%d/%Y")
-            values = self.collection_sheet.get_values()
-            names = values[0][1:]
-            amounts = []
-            for each in values[1:]:
-                if each[0] == date:
-                    amounts.extend([int(x) if x != "" else 0 for x in each[1:]])
+            all_values = self.collection_sheet.get_values()
+            customer_names = all_values[0][1:]
+            collection = []
 
-            names.append("Total")
-            amounts.append(sum(amounts))
-            collection = pd.DataFrame(data={"Names": names, date: amounts})
+            if date in self.dates:
+                collection_values = all_values[self.dates.index(date) + 1][1:]
+                collection_values = [
+                    int(x) if x != "" else 0 for x in collection_values
+                ]
+                collection.extend(collection_values)
+                collection.append(sum(collection_values))
+                customer_names.append("Total")
 
-            return collection
+                return pd.DataFrame(
+                    data={"Customer Names": customer_names, date: collection}
+                )
+
+            else:
+                return f"No data found for date: {date}"
+
         except Exception as e:
             raise e
