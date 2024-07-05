@@ -44,9 +44,8 @@ def AddCollection():
 
     show_btn = st.button(label="Show Collection", use_container_width=True)
 
+    collection = Daily_Collection().show_collection(date=date)
     if show_btn:
-        collection = Daily_Collection().show_collection(date=date)
-        if collection is not str:
-            st.write(collection)
-        else:
-            st.dataframe(data=collection, use_container_width=True)
+        st.write(collection) if isinstance(collection, str) else st.table(
+            data=collection
+        )
