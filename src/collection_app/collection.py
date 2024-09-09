@@ -168,7 +168,7 @@ class Daily_Collection:
                     data={"Customer Names": customer_names, date: collection}
                 )
 
-                return todays_df.sort_values(by=date, ascending=False, ignore_index=True)
+                return todays_df.sort_values(by=[date, "Customer Names"], ascending=False, ignore_index=True)
 
             else:
                 return f"No data found for date: {date}"
