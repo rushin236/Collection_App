@@ -1,11 +1,9 @@
 import os
 
-
 import gspread
 import pandas as pd
 import streamlit as st
 from google.oauth2.service_account import Credentials
-
 
 creds = Credentials.from_service_account_info(
     st.secrets["google_service_account"],
@@ -18,6 +16,7 @@ client = gspread.authorize(creds)
 workbook = client.open_by_key(st.secrets["private_gsheet_id"])
 collection_sheet = workbook.worksheet("Collection")
 customers_sheet = workbook.worksheet("Customers")
+auth_sheet = workbook.worksheet("Auth")
 
 
 class Daily_Collection:
@@ -80,13 +79,38 @@ class Daily_Collection:
         ]
         return int(amount.iloc[0])
 
+    def get_location(self, customer):
+        location = self.customers_df.loc[
+            self.customers_df["Customer Name"] == customer, "Location"
+        ]
+        return location.iloc[0]
+
+    def get_name(self, customer):
+        name = self.customers_df.loc[
+            self.customers_df["Customer Name"] == customer, "Customer Name"
+        ]
+        return name.iloc[0]
+
+    def get_auth(self, user, pswd):
+        self.auth_sheet = auth_sheet
+
+        usrs = self.auth_sheet.col_values(col=1)
+        pswds = self.auth_sheet.col_values(col=2)
+
+        # return usrs, pswds
+
+        if user in usrs and pswd in pswds and (usrs.index(user) == pswds.index(pswd)):
+            return True
+        else:
+            return False
+
     def add_customer(
         self,
         inputs: dict,
         customer_name: str,
         daily_amount: int,
         customer_location: str,
-    ) -> tuple:
+    ):
         try:
             customers_name = self.customer_sheet.col_values(1)[1:]
             if customer_name in customers_name:
@@ -168,10 +192,42 @@ class Daily_Collection:
                     data={"Customer Names": customer_names, date: collection}
                 )
 
-                return todays_df.sort_values(by=[date, "Customer Names"], ascending=False, ignore_index=True)
+                return todays_df.sort_values(
+                    by=[date, "Customer Names"], ascending=False, ignore_index=True
+                )
 
             else:
                 return f"No data found for date: {date}"
 
         except Exception as e:
             raise e
+
+    def update_customer(self, customer_name, customer_collection, location):
+
+        cust_details = self.customers_df.loc[
+            self.customers_df["Customer Name"] == customer_name
+        ].values.tolist()
+
+        cust_detail_list = [customer_name, customer_collection, location]
+
+        if cust_details[0] == cust_detail_list:
+            return "No changes to be done"
+        else:
+            idx = (
+                self.customers_df["Customer Name"].values.tolist().index(customer_name)
+            )
+
+            res = ""
+
+            for each in range(len(cust_detail_list)):
+
+                if cust_detail_list[each] not in cust_details[0]:
+                    res += f"Changed values for {customer_name} from {cust_details[0][each]} to {cust_detail_list[each]}\n"
+
+                    self.customer_sheet.update_cell(
+                        row=idx + 2, col=each + 1, value=cust_detail_list[each]
+                    )
+
+            self.__refresh_data__()
+
+            return res
