@@ -3,7 +3,25 @@ import streamlit as st
 from src.collection_app.collection import Daily_Collection
 
 
-def details():
+def get_authentication(user, pswd):
+    auth = Daily_Collection().get_auth(user=user, pswd=pswd)
+    return auth
+
+
+def user_pass_state():
+    if "user" not in st.session_state:
+        st.session_state.user = ""
+
+    if "passward" not in st.session_state:
+        st.session_state.passward = ""
+
+
+def reset_cred():
+    st.session_state.user = ""
+    st.session_state.passward = ""
+
+
+def CustomerDetails():
     st.title(":blue[Customer Details]")
 
     st.subheader("Select Customer:")
@@ -15,7 +33,7 @@ def details():
         options=Daily_Collection().get_customer_names(),
     )
 
-    name_col, amount_col, location_col = st.columns(spec=3, gap="large")
+    name_col, amount_col, location_col, update_check = st.columns(spec=4, gap="large")
 
     with name_col:
         st.subheader("Name:")
@@ -42,46 +60,28 @@ def details():
             value=Daily_Collection().get_location(customer=customer),
         )
 
-    # Initialize session state for authentication and input fields if not present
-    if "authenticate" not in st.session_state:
-        st.session_state.authenticate = False
-    if "user" not in st.session_state:
-        st.session_state.user = ""
-    if "pswd" not in st.session_state:
-        st.session_state.pswd = ""
+    with update_check:
+        st.subheader("Update")
+        update_select = st.selectbox(
+            label="Update Select",
+            label_visibility="hidden",
+            options=["No", "Yes"],
+        )
 
-    # Define a function to reset the user and password
-    def reset_auth_fields():
-        st.session_state.user = ""
-        st.session_state.pswd = ""
+    if update_select == "Yes":
+        with st.expander(label="Authenticate"):
 
-    def toggle_update():
-        return not st.session_state.authenticate
+            user_pass_state()
 
-    # Update button to trigger authentication process
-    update_btn = st.button(label="Update Values", use_container_width=True)
+            user_name = st.text_input(label="User Name", value=st.session_state.user)
 
-    # Check if the update button is clicked or the session is authenticated
-    if update_btn or toggle_update():
-
-        # Popover for authentication input
-        with st.expander("Authentication", expanded=True):
-            # Display input fields with values from session state
-            user = st.text_input(
-                label="User:", value=st.session_state.user, key="user_input"
-            )
-            pswd = st.text_input(
-                label="Password:",
-                type="password",
-                value=st.session_state.pswd,
-                key="pswd_input",
+            user_pass = st.text_input(
+                label="User Passward", value=st.session_state.passward, type="password"
             )
 
-            auth_btn = st.button("Authenticate")
-
+            auth_btn = st.button(label="Authenticate", use_container_width=True)
             if auth_btn:
-                # Perform authentication
-                auth = Daily_Collection().get_auth(user=user, pswd=pswd)
+                auth = get_authentication(user=user_name, pswd=user_pass)
 
                 if auth:
                     # Call update function on success
@@ -93,13 +93,11 @@ def details():
                     st.success(results)
 
                     # Reset user and password on success
-                    reset_auth_fields()
-                    st.session_state.authenticate = False
+                    reset_cred()
 
                 else:
                     # Display warning on failure
                     st.warning("User name or password is invalid.")
 
                     # Reset user and password on failure
-                    reset_auth_fields()
-                    st.session_state.authenticate = False
+                    reset_cred()
