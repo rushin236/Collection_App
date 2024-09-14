@@ -37,7 +37,7 @@ def CustomerDetails():
 
     with name_col:
         st.subheader("Name:")
-        customer = st.text_input(
+        name = st.text_input(
             label="Customer Name",
             label_visibility="hidden",
             value=Daily_Collection().get_name(customer=customer),
@@ -86,7 +86,8 @@ def CustomerDetails():
                 if auth:
                     # Call update function on success
                     results = Daily_Collection().update_customer(
-                        customer_name=customer,
+                        customer=customer,
+                        name=name,
                         customer_collection=amount,
                         location=location,
                     )

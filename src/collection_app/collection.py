@@ -202,27 +202,25 @@ class Daily_Collection:
         except Exception as e:
             raise e
 
-    def update_customer(self, customer_name, customer_collection, location):
+    def update_customer(self, customer, name, customer_collection, location):
 
         cust_details = self.customers_df.loc[
-            self.customers_df["Customer Name"] == customer_name
+            self.customers_df["Customer Name"] == customer
         ].values.tolist()
 
-        cust_detail_list = [customer_name, customer_collection, location]
+        cust_detail_list = [name, customer_collection, location]
 
         if cust_details[0] == cust_detail_list:
             return "No changes to be done"
         else:
-            idx = (
-                self.customers_df["Customer Name"].values.tolist().index(customer_name)
-            )
+            idx = self.customers_df["Customer Name"].values.tolist().index(customer)
 
             res = ""
 
             for each in range(len(cust_detail_list)):
 
                 if cust_detail_list[each] not in cust_details[0]:
-                    res += f"Changed values for {customer_name} from {cust_details[0][each]} to {cust_detail_list[each]}\n"
+                    res += f"Changed values for {customer} from {cust_details[0][each]} to {cust_detail_list[each]}\n"
 
                     self.customer_sheet.update_cell(
                         row=idx + 2, col=each + 1, value=cust_detail_list[each]
