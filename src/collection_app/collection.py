@@ -226,6 +226,11 @@ class Daily_Collection:
                         row=idx + 2, col=each + 1, value=cust_detail_list[each]
                     )
 
+                    if customer != name:
+                        self.collection_sheet.update_cell(
+                            row=1, col=idx + 2, value=name
+                        )
+
             self.__refresh_data__()
 
             return res
